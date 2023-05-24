@@ -1,0 +1,12 @@
+.dropdownContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .dropdownItem {
+    flex-basis: 25%; /* Adjust this value to control the width of each dropdown */
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
