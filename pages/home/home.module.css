@@ -1,3 +1,11 @@
+.mainContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+
+}
+
 .dropdownContainer {
     display: flex;
     flex-wrap: wrap;

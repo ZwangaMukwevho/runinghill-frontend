@@ -3,6 +3,8 @@ import Dropdown from "../../components/main/dropdown";
 import Layout from "../../components/layout/layout";
 import { ClassNames } from "@emotion/react";
 import classes from "./home.module.css";
+import SentenceBox from "../../components/main/sentenceBox";
+import SubmitButton from "../../components/main/submitButton";
 
 export default function Home2() {
   const labels = [
@@ -44,25 +46,29 @@ export default function Home2() {
     setSentence((prevSentence) => {
       const updatedSentence = [...prevSentence];
       updatedSentence[index] = value;
-      return updatedSentence.filter(Boolean).join(" ");
+      const constructedSentence = updatedSentence.filter(Boolean).join(" ");
+      return constructedSentence.trim();
     });
   };
 
   return (
     <Layout>
-      <div className={classes.dropdownContainer}>
-        {options.map((dropdownOptions, index) => (
-          <div className={classes.dropdownItem}>
-            <Dropdown
-              key={index}
-              options={dropdownOptions}
-              label={labels[index]}
-              value={selectedValues[index]}
-              onChange={(e) => handleDropdownChange(index, e.target.value)}
-            />
-          </div>
-        ))}
-        <div className="sentence">{sentence}</div>
+      <div className={classes.mainContainer}>
+        <div className={classes.dropdownContainer}>
+          {options.map((dropdownOptions, index) => (
+            <div className={classes.dropdownItem}>
+              <Dropdown
+                key={index}
+                options={dropdownOptions}
+                label={labels[index]}
+                value={selectedValues[index]}
+                onChange={(e) => handleDropdownChange(index, e.target.value)}
+              />
+            </div>
+          ))}
+        </div>
+        <SentenceBox sentence={sentence} />
+        <SubmitButton />
         <style jsx>{`
           .dropdown-container {
             display: flex;
