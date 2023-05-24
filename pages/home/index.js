@@ -5,6 +5,8 @@ import { ClassNames } from "@emotion/react";
 import classes from "./home.module.css";
 import SentenceBox from "../../components/main/sentenceBox";
 import SubmitButton from "../../components/main/submitButton";
+import Box from "@mui/material/Box";
+import SentencesContainer from "../../components/main/sentencesContainer";
 
 export default function Home2() {
   const labels = [
@@ -35,6 +37,7 @@ export default function Home2() {
 
   const [selectedValues, setSelectedValues] = useState(initialSelectedValues);
   const [sentence, setSentence] = useState("");
+  const [sentences, setSentences] = useState([]);
 
   const handleDropdownChange = (index, value) => {
     setSelectedValues((prevValues) => {
@@ -49,6 +52,11 @@ export default function Home2() {
       const constructedSentence = updatedSentence.filter(Boolean).join(" ");
       return constructedSentence.trim();
     });
+  };
+
+  const handleSentenceSubmit = () => {
+    const constructedSentence = selectedValues.filter(Boolean).join(" ").trim();
+    setSentences((prevSentences) => [...prevSentences, constructedSentence]);
   };
 
   return (
@@ -67,8 +75,27 @@ export default function Home2() {
             </div>
           ))}
         </div>
+
         <SentenceBox sentence={sentence} />
-        <SubmitButton />
+        <SubmitButton onSubmit={handleSentenceSubmit} />
+
+        {sentences.length > 0 && (
+          <Box sx={{ marginTop: "1rem" }}>
+            {sentences.map((sentence, index) => (
+              <Box
+                key={index}
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                  padding: "10px",
+                  marginBottom: "1rem",
+                }}
+              >
+                {sentence}
+              </Box>
+            ))}
+          </Box>
+        )}
+
         <style jsx>{`
           .dropdown-container {
             display: flex;
