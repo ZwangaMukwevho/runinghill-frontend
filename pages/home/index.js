@@ -7,6 +7,7 @@ import SentenceBox from "../../components/main/sentenceBox";
 import SubmitButton from "../../components/main/submitButton";
 import Box from "@mui/material/Box";
 import SentencesContainer from "../../components/main/sentencesContainer";
+import ConstructSentence from "../../logic/constructSentence";
 
 export default function Home2() {
   const labels = [
@@ -36,28 +37,25 @@ export default function Home2() {
   const initialSelectedValues = ["", "", "", "", "", "", "", "", ""];
 
   const [selectedValues, setSelectedValues] = useState(initialSelectedValues);
-  const [sentence, setSentence] = useState("");
   const [sentences, setSentences] = useState([]);
+  const [sentenceArray, setSentenceArray] = useState([]);
 
   const handleDropdownChange = (index, value) => {
+    setSentenceArray((sentenceArray) => [...sentenceArray, value]);
+
     setSelectedValues((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = value;
       return newValues;
     });
-
-    setSentence((prevSentence) => {
-      const updatedSentence = [...prevSentence];
-      updatedSentence[index] = value;
-      const constructedSentence = updatedSentence.filter(Boolean).join(" ");
-      return constructedSentence.trim();
-    });
   };
 
   const handleSentenceSubmit = () => {
-    const constructedSentence = selectedValues.filter(Boolean).join(" ").trim();
-    setSentences((prevSentences) => [...prevSentences, constructedSentence]);
-    setSentence("");
+    setSentences((prevSentences) => [
+      ...prevSentences,
+      ConstructSentence(sentenceArray),
+    ]);
+    setSentenceArray([]);
     setSelectedValues(initialSelectedValues);
   };
 
@@ -78,7 +76,7 @@ export default function Home2() {
           ))}
         </div>
 
-        <SentenceBox sentence={sentence} />
+        <SentenceBox sentence={ConstructSentence(sentenceArray)} />
         <SubmitButton onSubmit={handleSentenceSubmit} />
 
         {sentences.length > 0 && (

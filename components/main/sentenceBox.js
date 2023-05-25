@@ -1,9 +1,10 @@
 import React from "react";
 import Box from "@mui/material/Box";
+import classes from "./sentenceBox.module.css";
 
 const SentenceBox = ({ sentence }) => {
   return (
-    <div>
+    <div className={classes.sentence}>
       <Box
         component="div"
         sx={{
