@@ -3,20 +3,28 @@ import Box from "@mui/material/Box";
 
 const SentenceBox = ({ sentence }) => {
   return (
-    <Box
-      sx={{
-        marginTop: "1rem",
-        fontSize: "1.2rem",
-        border: "1px solid #ccc",
-        padding: "10px",
-        borderRadius: "4px",
-        backgroundColor: "#f5f5f5",
-        width: "150px",
-        height: "10px",
-      }}
-    >
-      {sentence}
-    </Box>
+    <div>
+      <Box
+        component="div"
+        sx={{
+          mb: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: "50px",
+          overflow: "hidden",
+          overflowY: "scroll",
+          border: "1px solid #ccc",
+          borderRadiuss: "4px",
+          padding: "10px",
+          width: "100%",
+          "min-width": "40rem",
+          borderRadius: "10px",
+          backgroundColor: "#d2d6d3",
+        }}
+      >
+        {sentence}
+      </Box>
+    </div>
   );
 };
 

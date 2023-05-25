@@ -57,6 +57,8 @@ export default function Home2() {
   const handleSentenceSubmit = () => {
     const constructedSentence = selectedValues.filter(Boolean).join(" ").trim();
     setSentences((prevSentences) => [...prevSentences, constructedSentence]);
+    setSentence("");
+    setSelectedValues(initialSelectedValues);
   };
 
   return (
@@ -82,30 +84,12 @@ export default function Home2() {
         {sentences.length > 0 && (
           <Box sx={{ marginTop: "1rem" }}>
             {sentences.map((sentence, index) => (
-              <Box
-                key={index}
-                sx={{
-                  backgroundColor: "#f5f5f5",
-                  padding: "10px",
-                  marginBottom: "1rem",
-                }}
-              >
-                {sentence}
-              </Box>
+              <div key={index}>
+                <SentencesContainer sentence={sentence}></SentencesContainer>
+              </div>
             ))}
           </Box>
         )}
-
-        <style jsx>{`
-          .dropdown-container {
-            display: flex;
-            flex-wrap: wrap;
-          }
-          .sentence {
-            margin-top: 1rem;
-            font-size: 1.2rem;
-          }
-        `}</style>
       </div>
     </Layout>
   );
