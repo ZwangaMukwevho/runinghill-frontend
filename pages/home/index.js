@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dropdown from "../../components/main/dropdown";
 import Layout from "../../components/layout/layout";
 import { ClassNames } from "@emotion/react";
@@ -22,17 +22,21 @@ export default function Home2() {
     "Exclamations",
   ];
 
-  const options = [
-    ["run", "climb", "laugh", "cry", "jump"], // Verbs
-    ["house", "Audi", "ChatGPT", "Laptop", "Juice"], // Nouns
-    ["happy", "sad", "angry", "excited", "tired"], // Adjectives
-    ["quickly", "slowly", "happily", "sadly", "loudly"], // Adverbs
-    ["he", "she", "they", "it", "we"], // Pronouns
-    ["above", "below", "beside", "behind", "within"], // Prepositions
-    ["and", "but", "or", "so", "because"], // Conjunctions
-    ["the", "a", "this", "that", "each"], // Determiners
-    ["wow", "ouch", "oh", "ah", "bravo"], // Exclamations
-  ];
+  useEffect(() => {
+    fetchWordOptions();
+  }, []);
+
+  const fetchWordOptions = async () => {
+    try {
+      const optionsPromises = labels.map((type) =>
+        fetch(`/api/words?type=${type}`).then((res) => res.json())
+      );
+      const options = await Promise.all(optionsPromises);
+      setSelectedValues(options.map(() => ""));
+    } catch (error) {
+      console.error("Failed to fetch word options:", error);
+    }
+  };
 
   const initialSelectedValues = ["", "", "", "", "", "", "", "", ""];
 
