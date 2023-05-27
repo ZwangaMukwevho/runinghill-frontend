@@ -11,6 +11,7 @@ import extractWords from "../../logic/extractWords";
 import postSentence from "../../logic/postSentence";
 import fetchSentences from "../../logic/fetchSentences";
 import Loader from "../../components/main/loader";
+import { formatErrorMessage } from "../../logic/error/formatError";
 import axios from "axios";
 
 export default function Home2() {
@@ -33,6 +34,7 @@ export default function Home2() {
   const [sentenceArray, setSentenceArray] = useState([]);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const handleDropdownChange = (index, value) => {
     setSentenceArray((sentenceArray) => [...sentenceArray, value]);
@@ -55,6 +57,8 @@ export default function Home2() {
     try {
       statusCode = await postSentence(sentence);
     } catch (error) {
+      setError(formatErrorMessage("uploadError"));
+      setLoading(false);
       console.log(error);
     }
   };
@@ -82,6 +86,8 @@ export default function Home2() {
         setLoading(false);
         console.log("done");
       } catch (error) {
+        setError(formatErrorMessage("fetchError"));
+        setLoading(false);
         console.log("error");
         console.log(error);
       }
@@ -124,6 +130,10 @@ export default function Home2() {
               ))}
             </Box>
           )}
+
+          <div>
+            <p className={classes.errorMessage}>{error}</p>
+          </div>
         </div>
       )}
     </Layout>
