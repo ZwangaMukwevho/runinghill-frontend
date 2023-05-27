@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import SentencesContainer from "../../components/main/sentencesContainer";
 import ConstructSentence from "../../logic/constructSentence";
 import extractWords from "../../logic/extractWords";
+import postSentence from "../../logic/postSentence";
 import axios from "axios";
 
 export default function Home2() {
@@ -28,20 +29,8 @@ export default function Home2() {
   const [selectedValues, setSelectedValues] = useState(initialSelectedValues);
   const [sentences, setSentences] = useState([]);
   const [sentenceArray, setSentenceArray] = useState([]);
-  const [test, setTest] = useState([]);
+  const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const options = [
-    ["run", "climb", "laugh", "cry", "jump"], // Verbs
-    ["run", "climb", "laugh", "cry", "jump"], // Nouns
-    ["happy", "sad", "angry", "excited", "tired"], // Adjectives
-    ["quickly", "slowly", "happily", "sadly", "loudly"], // Adverbs
-    ["he", "she", "they", "it", "we"], // Pronouns
-    ["above", "below", "beside", "behind", "within"], // Prepositions
-    ["and", "but", "or", "so", "because"], // Conjunctions
-    ["the", "a", "this", "that", "each"], // Determiners
-    ["wow", "ouch", "oh", "ah", "bravo"], // Exclamations
-  ];
 
   const handleDropdownChange = (index, value) => {
     setSentenceArray((sentenceArray) => [...sentenceArray, value]);
@@ -53,13 +42,19 @@ export default function Home2() {
     });
   };
 
-  const handleSentenceSubmit = () => {
-    setSentences((prevSentences) => [
-      ...prevSentences,
-      ConstructSentence(sentenceArray),
-    ]);
+  const handleSentenceSubmit = async () => {
+    var statusCode;
+    const sentence = ConstructSentence(sentenceArray);
+    setSentences((prevSentences) => [...prevSentences, sentence]);
+
     setSentenceArray([]);
     setSelectedValues(initialSelectedValues);
+
+    try {
+      statusCode = await postSentence(sentence);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -67,17 +62,15 @@ export default function Home2() {
       try {
         var type;
         var tempArr = [];
-        for (let i = 0; i < options.length; i++) {
+        for (let i = 0; i < labels.length; i++) {
           type = labels[i];
 
           const response = await axios.get(`api/words?type=${type}`);
           const wordsArray = await extractWords(response.data);
-          // console.log("WordsArray");
-          // console.log(wordsArray);
           tempArr.push(wordsArray);
         }
 
-        setTest(tempArr);
+        setOptions(tempArr);
         setLoading(false);
         console.log("done");
       } catch (error) {
@@ -88,23 +81,8 @@ export default function Home2() {
     getWordList();
   }, []);
 
-  // const fetchWords = async () => {
-  //   try {
-  //     const optionsPromises = labels.map((type) =>
-  //     fetch(`/api/words?type=${type}`).then((res) => res.json())xcdxg
-  //   );
-  //   const options = await Promise.all(optionsPromises);
-  //   setSelectedValues(options.map(() => ''));
-  //   } catch (error) {
-  //     console.error("failed to fetch word options: ", error);
-  //   }
-  // };
-
   console.log("test");
-  console.log(test);
-
-  // console.log("loading");
-  // console.log(loading);
+  console.log(options);
 
   return (
     <Layout>
@@ -113,7 +91,7 @@ export default function Home2() {
       ) : (
         <div className={classes.mainContainer}>
           <div className={classes.dropdownContainer}>
-            {test.map((dropdownOptions, index) => (
+            {options.map((dropdownOptions, index) => (
               <div className={classes.dropdownItem}>
                 <Dropdown
                   key={index}
