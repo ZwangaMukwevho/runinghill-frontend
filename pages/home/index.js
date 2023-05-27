@@ -9,6 +9,8 @@ import SentencesContainer from "../../components/main/sentencesContainer";
 import ConstructSentence from "../../logic/constructSentence";
 import extractWords from "../../logic/extractWords";
 import postSentence from "../../logic/postSentence";
+import fetchSentences from "../../logic/fetchSentences";
+import Loader from "../../components/main/loader";
 import axios from "axios";
 
 export default function Home2() {
@@ -62,6 +64,7 @@ export default function Home2() {
       try {
         var type;
         var tempArr = [];
+        var existingSentences;
         for (let i = 0; i < labels.length; i++) {
           type = labels[i];
 
@@ -69,6 +72,11 @@ export default function Home2() {
           const wordsArray = await extractWords(response.data);
           tempArr.push(wordsArray);
         }
+
+        existingSentences = await fetchSentences();
+        setSentences(existingSentences);
+        console.log("sentences");
+        console.log(existingSentences);
 
         setOptions(tempArr);
         setLoading(false);
@@ -87,7 +95,7 @@ export default function Home2() {
   return (
     <Layout>
       {loading ? (
-        <div>loading</div>
+        <Loader bool={loading} />
       ) : (
         <div className={classes.mainContainer}>
           <div className={classes.dropdownContainer}>
