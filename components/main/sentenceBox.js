@@ -1,8 +1,13 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import classes from "./sentenceBox.module.css";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 const SentenceBox = ({ sentence }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <div className={classes.sentence}>
       <Box
@@ -18,7 +23,7 @@ const SentenceBox = ({ sentence }) => {
           borderRadiuss: "4px",
           padding: "10px",
           width: "100%",
-          "min-width": "40rem",
+          "min-width": isMobile ? "20rem" : "40rem",
           borderRadius: "10px",
           backgroundColor: "#d2d6d3",
         }}

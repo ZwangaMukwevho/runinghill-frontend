@@ -7,12 +7,12 @@ import SubmitButton from "../../components/main/submitButton";
 import Box from "@mui/material/Box";
 import SentencesContainer from "../../components/main/sentencesContainer";
 import ConstructSentence from "../../logic/constructSentence";
-import extractWords from "../../logic/extractWords";
 import postSentence from "../../logic/postSentence";
 import fetchSentences from "../../logic/fetchSentences";
 import Loader from "../../components/main/loader";
 import { formatErrorMessage } from "../../logic/error/formatError";
-import axios from "axios";
+import getWords from "../../logic/getWords";
+import SentencesTable from "../../components/main/sentencesTable";
 
 export default function Home2() {
   const labels = [
@@ -58,45 +58,27 @@ export default function Home2() {
       statusCode = await postSentence(sentence);
     } catch (error) {
       setError(formatErrorMessage("uploadError"));
-      setLoading(false);
-      console.log(error);
     }
   };
 
   useEffect(() => {
     async function getWordList() {
       try {
-        var type;
         var tempArr = [];
         var existingSentences;
-        for (let i = 0; i < labels.length; i++) {
-          type = labels[i];
 
-          const response = await axios.get(`api/words?type=${type}`);
-          const wordsArray = await extractWords(response.data);
-          tempArr.push(wordsArray);
-        }
-
+        tempArr = await getWords(labels);
         existingSentences = await fetchSentences();
         setSentences(existingSentences);
-        console.log("sentences");
-        console.log(existingSentences);
-
         setOptions(tempArr);
         setLoading(false);
-        console.log("done");
       } catch (error) {
         setError(formatErrorMessage("fetchError"));
         setLoading(false);
-        console.log("error");
-        console.log(error);
       }
     }
     getWordList();
   }, []);
-
-  console.log("test");
-  console.log(options);
 
   return (
     <Layout>
@@ -104,6 +86,7 @@ export default function Home2() {
         <Loader bool={loading} />
       ) : (
         <div className={classes.mainContainer}>
+          <h3>Construct sentence from dropdowns</h3>
           <div className={classes.dropdownContainer}>
             {options.map((dropdownOptions, index) => (
               <div className={classes.dropdownItem}>
@@ -119,17 +102,11 @@ export default function Home2() {
           </div>
 
           <SentenceBox sentence={ConstructSentence(sentenceArray)} />
+
           <SubmitButton onSubmit={handleSentenceSubmit} />
 
-          {sentences.length > 0 && (
-            <Box sx={{ marginTop: "1rem" }}>
-              {sentences.map((sentence, index) => (
-                <div key={index}>
-                  <SentencesContainer sentence={sentence}></SentencesContainer>
-                </div>
-              ))}
-            </Box>
-          )}
+          <h3>Sentences submitted previously</h3>
+          <SentencesTable loading={loading} sentences={sentences} />
 
           <div>
             <p className={classes.errorMessage}>{error}</p>
