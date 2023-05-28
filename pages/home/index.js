@@ -4,8 +4,6 @@ import Layout from "../../components/layout/layout";
 import classes from "./home.module.css";
 import SentenceBox from "../../components/main/sentenceBox";
 import SubmitButton from "../../components/main/submitButton";
-import Box from "@mui/material/Box";
-import SentencesContainer from "../../components/main/sentencesContainer";
 import ConstructSentence from "../../logic/constructSentence";
 import postSentence from "../../logic/postSentence";
 import fetchSentences from "../../logic/fetchSentences";
@@ -13,20 +11,9 @@ import Loader from "../../components/main/loader";
 import { formatErrorMessage } from "../../logic/error/formatError";
 import getWords from "../../logic/getWords";
 import SentencesTable from "../../components/main/sentencesTable";
+import labels from "../../configs/labels.json";
 
 export default function Home2() {
-  const labels = [
-    "Verb",
-    "Noun",
-    "Adjective",
-    "Adverb",
-    "Pronoun",
-    "Preposition",
-    "Conjunction",
-    "Determiner",
-    "Exclamation",
-  ];
-
   const initialSelectedValues = ["", "", "", "", "", "", "", "", ""];
 
   const [selectedValues, setSelectedValues] = useState(initialSelectedValues);
