@@ -12,9 +12,10 @@ import { formatErrorMessage } from "../../logic/error/formatError";
 import getWords from "../../logic/getWords";
 import SentencesTable from "../../components/main/sentencesTable";
 import labels from "../../configs/labels.json";
+import { mapWordTypeToIndex } from "../../logic/mapWordTypeToIndex";
 
 export default function Home2() {
-  const initialSelectedValues = ["", "", "", "", "", "", "", "", ""];
+  const initialSelectedValues = ["", ""];
 
   const [selectedValues, setSelectedValues] = useState(initialSelectedValues);
   const [sentences, setSentences] = useState([]);
@@ -22,8 +23,27 @@ export default function Home2() {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [wordsList, setSelectedWordList] = useState([]);
 
-  const handleDropdownChange = (index, value) => {
+  // Saves values chosen on dropdowns for word types
+  const handleTypeDropdownChange = (index, value) => {
+    setSelectedValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = value;
+      return newValues;
+    });
+
+    const wordIndex = mapWordTypeToIndex(value);
+
+    if (wordIndex === 9) {
+      setSelectedWordList([]);
+    } else {
+      setSelectedWordList(options[wordIndex]);
+    }
+  };
+
+  // Saves values chosen on dropdowns for words
+  const handleWordDropDownChange = (index, value) => {
     setSentenceArray((sentenceArray) => [...sentenceArray, value]);
 
     setSelectedValues((prevValues) => {
@@ -33,6 +53,7 @@ export default function Home2() {
     });
   };
 
+  // Called when submit button is clicked
   const handleSentenceSubmit = async () => {
     var statusCode;
     const sentence = ConstructSentence(sentenceArray);
@@ -48,6 +69,7 @@ export default function Home2() {
     }
   };
 
+  // Cal this use effect statement once on mount
   useEffect(() => {
     async function getWordList() {
       try {
@@ -75,17 +97,23 @@ export default function Home2() {
         <div className={classes.mainContainer}>
           <h3>Construct sentence from dropdowns</h3>
           <div className={classes.dropdownContainer}>
-            {options.map((dropdownOptions, index) => (
-              <div className={classes.dropdownItem}>
-                <Dropdown
-                  key={index}
-                  options={dropdownOptions}
-                  label={labels[index]}
-                  value={selectedValues[index]}
-                  onChange={(e) => handleDropdownChange(index, e.target.value)}
-                />
-              </div>
-            ))}
+            <div className={classes.dropdownItem}>
+              <Dropdown
+                options={labels}
+                label="Word Type"
+                value={selectedValues[0]}
+                onChange={(e) => handleTypeDropdownChange(0, e.target.value)}
+              />
+            </div>
+
+            <div className={classes.dropdownItem}>
+              <Dropdown
+                options={wordsList}
+                label="Words"
+                value={selectedValues[1]}
+                onChange={(e) => handleWordDropDownChange(1, e.target.value)}
+              />
+            </div>
           </div>
 
           <SentenceBox sentence={ConstructSentence(sentenceArray)} />

@@ -28,7 +28,6 @@ const Dropdown = ({ options, value, onChange, label }) => {
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText>Optional</FormHelperText>
     </FormControl>
   );
 };
